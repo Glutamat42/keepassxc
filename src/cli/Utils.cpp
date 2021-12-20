@@ -145,6 +145,27 @@ namespace Utils
             compositeKey->addKey(fileKey);
         }
 
+        if (1==1) {
+            auto fileKey = QSharedPointer<FileKey>::create();
+            QString secondKeyFile=QString("/keyfile2.key");
+            QString errorMessage;
+            // LCOV_EXCL_START
+            if (!fileKey->load(secondKeyFile, &errorMessage)) {
+                err << QObject::tr("Failed to load key file %1: %2").arg(secondKeyFile, errorMessage) << endl;
+                return {};
+            }
+
+            if (fileKey->type() != FileKey::KeePass2XMLv2 && fileKey->type() != FileKey::Hashed) {
+                err << QObject::tr("WARNING: You are using an old key file format which KeePassXC may\n"
+                                   "stop supporting in the future.\n\n"
+                                   "Please consider generating a new key file.")
+                    << endl;
+            }
+            // LCOV_EXCL_STOP
+
+            compositeKey->addKey(fileKey);
+        }
+
 #ifdef WITH_XC_YUBIKEY
         if (!yubiKeySlot.isEmpty()) {
             unsigned int serial = 0;
